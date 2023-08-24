@@ -10,6 +10,7 @@ use App\Http\Controllers\TestemonialController;
 use App\Models\TeamMember;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\showController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,9 +29,11 @@ Route::get('/', function () {
 });
 
 
-Route::prefix('dashboard')->name('dashboard.')->group(function(){
+Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function(){
     Route::get('/',[dashboardController::class , 'index'])->name('index');
     //Articles
+    Route::post('/articles/{article}/comments', [CommentController::class , 'store'])->name('comments.store');
+
     Route::get('/articles',[ArticleController::class , 'index'])->name('layouts.articles.index');
     Route::post('/articles',[ArticleController::class , 'store'])->name('layouts.articles.index');
     Route::get('/fetch-articles',[ArticleController::class , 'fetchAll'])->name('layouts.fetchArticle.index');
@@ -38,6 +41,7 @@ Route::prefix('dashboard')->name('dashboard.')->group(function(){
     Route::post('/update', [ArticleController::class, 'update'])->name('layouts.update.index');
     Route::get('/update', [ArticleController::class, 'update'])->name('layouts.update.index');
     Route::post('/delete', [ArticleController::class, 'delete'])->name('layouts.delete.index');
+    Route::post('/logout',[ArticleController::class,'logout'])->name('layouts.logout.index');
     //features
     
    Route::get('/features',[FeatureController::class , 'index'])->name('layouts.features.index');
@@ -94,5 +98,10 @@ Route::prefix('dashboard')->name('dashboard.')->group(function(){
 
     });
 
-    Route::get('/blog',[BlogController::class,'index'])->name('layouts.blog.index');
+    Route::get('/blog',[BlogController::class,'index'])->middleware('auth')->name('layouts.blog.index');
+    
     Route::post('/form1',[BlogController::class,'form1submit'])->name('form1');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

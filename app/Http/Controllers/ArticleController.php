@@ -4,20 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Storage;
 class ArticleController extends Controller
 {
     public function index()
     {
+        $articles = Article::with('comments')->get();
+        return view('layouts.articles.index', compact('articles'));
+    
         return view('layouts.articles.index');
+    }
+
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
     }
 
     public function store(Request $request)
     {
+       
         $file = $request->file('image');
         $fileName = time() . '.' . $file->getClientOriginalExtension();
         $file->storeAs('public/images', $fileName);
+        
 
         $articleData = [
             'id' => $request->id,
@@ -25,7 +38,8 @@ class ArticleController extends Controller
             'title_ar' => $request->title_ar,
             'description_en' => $request->description_en,
             'description_ar' => $request->description_ar,
-            'image' => $fileName
+            'status' => $request->status,
+            'image' => $fileName,
         ];
 
         Article::create($articleData);
@@ -51,6 +65,7 @@ class ArticleController extends Controller
                             <th>Description (English)</th>
                             <th>Description (Arabic)</th>
                             <th>Image</th>
+                            <th>status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -67,9 +82,11 @@ class ArticleController extends Controller
                         <td style="max-width: 300px; word-wrap: break-word;">' . $article->description_en . '</td>
                         <td style="max-width: 300px; word-wrap: break-word;">' . $article->description_ar . '</td>
                         <td><img src="' . asset('storage/images/' . $article->image) . '" alt="Article Image" width="100" class="img-thumbnail"></td>
+                        <td style="max-width: 300px; word-wrap: break-word;">' . $article->status . '</td>
+
                         <td>
                             <a href="#" id="' . $article->id . '" class="text-success mx-1 editIcon" data-bs-toggle="modal" data-bs-target="#editArticlesModal"><i class="bi bi-pencil-square h4"></i></a>
-                            <a href="#" id="' . $article->id . '" class="text-danger mx-1 deleteIcon"><i class="bi bi-trash h4"></i></a>
+                            <a href="#" id="' . $article->id . '" class="text-danger mx-1 deleteIconA"><i class="bi bi-trash h4"></i></a>
                         </td>
                     </tr>
                 ';
@@ -118,7 +135,8 @@ class ArticleController extends Controller
             'title_ar' => $request->title_ar,
             'description_en' => $request->description_en,
             'description_ar' => $request->description_ar,
-            'image' => $fileName
+            'status'=>$request->status,
+            'image' => $fileName,
         ];
         $article->update($articleData);
         return response()->json([

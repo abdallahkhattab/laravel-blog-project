@@ -80,6 +80,8 @@
             <label for="description_ar">description in arabic</label>
             <textarea type="text" name="description_ar"  id="description_ar" class="form-control" placeholder="description in arabic" required></textarea>
           </div>
+
+         
           <div class="my-2">
             <label for="image">Select image</label>
             <input type="file" name="image"  class="form-control" required>
@@ -87,6 +89,8 @@
           <div class="mt-2" id="image">
 
           </div>
+
+              
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

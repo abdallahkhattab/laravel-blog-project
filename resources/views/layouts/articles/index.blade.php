@@ -30,6 +30,17 @@
             <label for="description_ar">description in arabic</label>
             <textarea type="text" name="description_ar" class="form-control" placeholder="description in arabic" required></textarea>
           </div>
+         
+          <div class="my-2">
+            <label for="active">Active</label>
+            <select name="status" class="form-control" required>
+              <option value="0">Not Active</option>
+              <option value="1">Active</option>
+            </select>
+          </div>
+    
+      
+    
           <div class="my-2">
             <label for="image">Select image</label>
             <input type="file" name="image" class="form-control" required>
@@ -79,6 +90,16 @@
             <label for="description_ar">description in arabic</label>
             <textarea type="text" name="description_ar"  id="description_ar" class="form-control" placeholder="description in arabic" required></textarea>
           </div>
+          <div class="my-2">
+            <label for="active">Active</label>
+            <select name="status" class="form-control" required>
+              <option value="0">Not Active</option>
+              <option value="1">Active</option>
+            </select>
+          </div>
+    
+
+          
           <div class="my-2">
             <label for="image">Select image</label>
             <input type="file" name="image"  class="form-control" required>

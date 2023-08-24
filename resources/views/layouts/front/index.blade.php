@@ -88,27 +88,66 @@
         <i class="fas fa-angle-double-down fa-2x"></i>
       </a>
     </div>
+    
     <!-- End Landing -->
     <!-- Start Articles -->
     <div class="articles" id="articles">
-        <h2 class="main-title">Articles</h2>
-        <div class="container">
-            @foreach ($articles as $article)
-                <div class="box">
-                    <img src="{{ asset('storage/images/' . $article->image) }}" alt="" />
-                    
-                    <div class="content">
-                        <h3>{{ $article->title_en }}</h3>
-                        <p>{{ $article->description_en }}</p>
-                    </div>
-                    <div class="info">
-                        <a href="#">Read More</a>
-                        <i class="fas fa-long-arrow-alt-right"></i>
-                    </div>
+      <h2 class="main-title">Articles</h2>
+      <div class="container">
+          @foreach ($articles as $article)
+              <div class="box">
+                  <img src="{{ asset('storage/images/' . $article->image) }}" alt="" />
+  
+                  <div class="content">
+                      <h3>{{ $article->title_en }}</h3>
+                      <p>{{ $article->description_en }}</p>
+                  </div>
+                  <div class="info">
+                      <a href="#">Read More</a>
+                      <i class="fas fa-long-arrow-alt-right"></i>
+                  </div>
+  
+                  <!-- Comment section -->
+                  <p class="d-inline-flex p-2">Comments</p>
+
+                  <div class="comments-section">
+                    @foreach ($article->comments as $comment)
+                        <div class="comment mb-4">
+                            <div class="d-flex align-items-start">
+                               
+                              <div class="comment-content">
+                                <div class="comment-header">
+                                    <span class="comment-user d-flex p-2">{{ $comment->user->name }} : {{ $comment->content }}</span>
+                                </div>
+                                
+                                <div class="comment-time">{{ $comment->created_at->diffForHumans() }}</div>
+                            </div>
+                        </div>
+                      </div>
+                    @endforeach
+                
+                    <!-- Comment form -->
+                    <form action="{{ route('dashboard.comments.store', $article->id) }}" method="post">
+                        @csrf
+                        <div class="mb-3">
+                            <textarea class="form-control" name="content" rows="3" placeholder="Add your comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
                 </div>
-            @endforeach
-        </div>
-    </div>
+                
+              </div>
+          @endforeach
+      </div>
+  
+      <div class="d-flex justify-content-center py-3">
+          {{ $articles->links() }}
+      </div>
+  </div>
+  
+  
+  
+  
     
     <div class="spikes"></div>
     <!-- End Articles -->
@@ -228,6 +267,8 @@
         </div>
         @endforeach
 
+
+        
       </div>
 
     </div>
@@ -354,7 +395,6 @@
           </ul>
           <a href="#">Choose Plan</a>
         </div>
-        
         @endforeach
       </div>
 

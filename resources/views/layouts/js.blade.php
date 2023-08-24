@@ -133,7 +133,7 @@ table.clear().draw();
 
 //delete
 
-$(document).on('click', '.deleteIcon', function(e) {
+$(document).on('click', '.deleteIconA', function(e) {
     e.preventDefault();
     let id = $(this).attr('id');
 

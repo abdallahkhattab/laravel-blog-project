@@ -14,8 +14,8 @@ class BlogController extends Controller
 {
     //
     public function index() {
-        $articles = Article::all(); // Fetch all articles from the database. You can modify the query based on your needs.
-        $features = Feature::all();
+        $articles = Article::where('status',1)->paginate(2); // Fetch all articles from the database. You can modify the query based on your needs.
+        $features = Feature::where('status',1)->paginate(6);
         $testimonials = Testemonial::all();
         $teamMembers = TeamMember::all();
         $services = Service::all();
@@ -25,7 +25,7 @@ class BlogController extends Controller
         }
 
         public function form1submit(Request $request){
-
+          
             $request->validate([
             'name'=>'required',
             'email'=>'required'

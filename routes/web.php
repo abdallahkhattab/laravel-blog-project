@@ -11,6 +11,7 @@ use App\Models\TeamMember;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\showController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +33,11 @@ Route::get('/', function () {
 Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function(){
     Route::get('/',[dashboardController::class , 'index'])->name('index');
     //Articles
+    //comment
     Route::post('/articles/{article}/comments', [CommentController::class , 'store'])->name('comments.store');
+    //like
+    Route::post('/articles/{article}/like', [LikeController::class , 'store'])->name('articles.like');
+    Route::delete('/articles/{article}/unlike', [LikeController::class , 'destroy'])->name('articles.unlike');
 
     Route::get('/articles',[ArticleController::class , 'index'])->name('layouts.articles.index');
     Route::post('/articles',[ArticleController::class , 'store'])->name('layouts.articles.index');

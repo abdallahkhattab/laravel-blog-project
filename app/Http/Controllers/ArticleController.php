@@ -165,4 +165,6 @@ class ArticleController extends Controller
             'message' => 'Failed to delete the article',
         ], 400);
     }
+     
 }
+

@@ -12,6 +12,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -109,33 +111,51 @@
   
                   <!-- Comment section -->
                   <p class="d-inline-flex p-2">Comments</p>
-
+  
                   <div class="comments-section">
-                    @foreach ($article->comments as $comment)
-                        <div class="comment mb-4">
-                            <div class="d-flex align-items-start">
-                               
-                              <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-user d-flex p-2">{{ $comment->user->name }} : {{ $comment->content }}</span>
-                                </div>
-                                
-                                <div class="comment-time">{{ $comment->created_at->diffForHumans() }}</div>
-                            </div>
-                        </div>
-                      </div>
-                    @endforeach
-                
-                    <!-- Comment form -->
-                    <form action="{{ route('dashboard.comments.store', $article->id) }}" method="post">
-                        @csrf
-                        <div class="mb-3">
-                            <textarea class="form-control" name="content" rows="3" placeholder="Add your comment"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Comment</button>
-                    </form>
-                </div>
-                
+                      @foreach ($article->comments as $comment)
+                          <div class="comment mb-4">
+                              <div class="d-flex align-items-start">
+                                  <div class="comment-content">
+                                      <div class="comment-header">
+                                          <span class="comment-user d-flex p-2">{{ $comment->user->name }} : {{ $comment->content }}</span>
+                                      </div>
+                                      <div class="comment-time">{{ $comment->created_at->diffForHumans() }}</div>
+                                  </div>
+                              </div>
+                          </div>
+                      @endforeach
+  
+                      <!-- Comment form -->
+                      <form action="{{ route('dashboard.comments.store', $article->id) }}" method="post">
+                          @csrf
+                          <div class="mb-3">
+                              <textarea class="form-control" name="content" rows="3" placeholder="Add your comment"></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Submit Comment</button>
+                      </form>
+                  </div>
+  
+                  <!-- Like/Unlike buttons -->
+                  @auth
+                  @if(!$article->likes->contains('user_id', auth()->user()->id))
+                      <form method="POST" action="{{ route('dashboard.articles.like', ['article' => $article->id]) }}">
+                          @csrf
+                          <button type="submit" class="btn" >
+                              <i class="far fa-thumbs-up"></i>
+                          </button>
+                      </form>
+                  @else
+                      <form method="POST" action="{{ route('dashboard.articles.unlike', ['article' => $article->id]) }}">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn">    <i class="fa fa-thumbs-up text-danger" aria-hidden="true"></i>
+                          </i>
+                          </button>
+                      </form>
+                  @endif
+              @endauth
+              
               </div>
           @endforeach
       </div>
@@ -144,6 +164,7 @@
           {{ $articles->links() }}
       </div>
   </div>
+  
   
   
   
@@ -565,6 +586,46 @@
     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
 </script>
 
+<script>
+  $(document).ready(function() {
+      $('.like-button').on('click', function() {
+          var form = $(this).closest('.like-form');
+          var articleId = form.data('article');
+  
+          $.ajax({
+              url: '/articles/' + articleId + '/like',
+              type: 'POST',
+              data: form.serialize(),
+              success: function(response) {
+                  form.find('.like-button').toggleClass('active');
+                  form.siblings('.unlike-form').find('.unlike-button').removeClass('active');
+              },
+              error: function(error) {
+                  console.error(error);
+              }
+          });
+      });
+  
+      $('.unlike-button').on('click', function() {
+          var form = $(this).closest('.unlike-form');
+          var articleId = form.data('article');
+  
+          $.ajax({
+              url: '/articles/' + articleId + '/unlike',
+              type: 'POST',
+              data: form.serialize(),
+              success: function(response) {
+                  form.find('.unlike-button').toggleClass('active');
+                  form.siblings('.like-form').find('.like-button').removeClass('active');
+              },
+              error: function(error) {
+                  console.error(error);
+              }
+          });
+      });
+  });
+  </script>
+  
 
   </body>
 </html>
